@@ -121,7 +121,7 @@
       ansible.builtin.debug:
         msg: "引き継いだ値: {{ global_test_set_fact }}"
 
-# ---------------------------------------------------------
+    # ---------------------------------------------------------
     # 前のPlayからの引き継ぎ値確認 (varsセクション)
     # ---------------------------------------------------------
     - name: "Display inherited value from previous Play (vars section)"
@@ -164,3 +164,4 @@
     - name: "Final Check: Confirming variable after exiting Block"
       ansible.builtin.debug:
         msg: "Block外の最終確認: {{ test_var }}"
+
