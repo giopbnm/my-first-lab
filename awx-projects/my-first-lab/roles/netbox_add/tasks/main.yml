@@ -1,0 +1,16 @@
+---
+- name: 拠点を登録する (API直接)
+  ansible.builtin.uri:
+    # 今回はSite（拠点）なのでこちら
+    url: "{{ netbox_url }}/api/dcim/sites/"
+    method: POST
+    headers:
+      Authorization: "Token {{ netbox_token }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      name: "Tokyo-Lab"
+      slug: "tokyo-lab"
+      status: "active"
+    status_code: [201, 200] # 作成成功(201)または既に存在(200)を許可
+    validate_certs: "{{ netbox_validate_certs }}"

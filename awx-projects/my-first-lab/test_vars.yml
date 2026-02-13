@@ -1,0 +1,88 @@
+#
+# ansible-playbook test_vars.yml -vvv
+#
+#
+# my-precedence-lab/
+# ├── group_vars/
+# │   └── all.yml              # 8 group_vars/all (低)
+# ├── host_vars/
+# │   └── localhost.yml        # 7 host_vars (中)
+# └── roles/
+# │  └── test_vars/
+# │      ├── defaults/
+# │      │   └── main.yml     # 9 role defaults (最弱)
+# │      ├── vars/
+# │      │   └── main.yml     # 5 role vars (強)
+# │      └── tasks/
+# │          └── main.yml
+# ├── test_vars.yml             # メインPlaybook
+#
+# AWXのジョブ実行画面で 「Extra Variables」 欄に以下を入力して実行
+#      test_var: "1. [Extra Var] AWXの実行時に渡す変数（最強）"
+#
+# ※上記以外のファイル名で作成されたvarsファイルは[vars_files:]で明示的に読み込む必要があります。 
+#
+# ---------------------------------------------------------
+# 順位,場所,説明(AIによる解説)
+# 1 (最強),Extra Vars,      AWXの実行画面や -e で渡すもの。すべてを上書きする。
+# 2       ,Task Vars,       tasks: 内の vars: で書いたもの。そのタスク中のみ有効。
+# 3       ,Block Vars,      block: 内の vars: で書いたもの。ブロック内で有効。
+# 4       ,Role Params,     "roles: - { role: x, vars: { ... } } で渡す引数。"
+# 5       ,Role Vars,       roles/x/vars/main.yml。Role Defaultsより圧倒的に強い。
+# 6       ,Playbook Vars,   Playbookの vars: セクション。
+# 7       ,Host Vars,       host_vars/ フォルダ内の個別設定。
+# 8       ,Group Vars,      group_vars/ フォルダ内の共通設定。
+# 9 (最弱),Role Defaults,   roles/x/defaults/main.yml。上書きされる前提の初期値。
+---
+- name: Variable Precedence Lab with Block
+  hosts: localhost
+  connection: local # ローカルホストで実行
+  gather_facts: false
+
+  # ---------------------------------------------------------
+  # Playbook Vars
+  # ---------------------------------------------------------
+  vars:
+    test_var: "【6】. [Playbook Var] Playbookのvarsセクション"
+
+# ---------------------------------------------------------
+  # 外部ファイルを読み込み
+  # ---------------------------------------------------------
+  vars_files:
+    - external_config.yml
+
+  # ---------------------------------------------------------
+  # Role 呼び出しと引数渡し
+  # ---------------------------------------------------------
+  roles:
+    - role: test_vars
+      vars:
+        test_var: "【4】. [Role Parameter] ロール呼び出し時の引数"
+
+  tasks:
+    # ---------------------------------------------------------
+    # Block内での優先順位検証
+    # ---------------------------------------------------------
+    - name: Block Level Test
+      block:
+        # (A) タスク変数が定義されている場合
+        - name: "[Block Level Test] Task level variable check"
+          ansible.builtin.debug:
+            msg: "{{ test_var }}"
+          vars:
+            test_var: "【2】. [Task Var] タスク内で直接定義した変数"
+
+        # (B) タスク変数がなく、ブロック変数を参照する場合
+        - name: "[Block Level Test] Show variable from Block scope"
+          ansible.builtin.debug:
+            msg: "タスク変数がない場合: {{ test_var }}"
+
+      vars:
+        test_var: "【3】. [Block Var] ブロック全体に適用される変数"
+
+    # ---------------------------------------------------------
+    # スコープ解除後の検証
+    # ---------------------------------------------------------
+    - name: Final Check outside Block
+      ansible.builtin.debug:
+        msg: "Block外の最終確認: {{ test_var }}"

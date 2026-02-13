@@ -1,0 +1,11 @@
+# ==============================================================================
+# Group Variables - 全ホスト共通設定
+# ==============================================================================
+---
+# --- NetBox Connection Settings ---
+netbox_url: http://<WSL_IP>:<NodePort> 
+netbox_token: "YOUR_NETBOX_API_TOKEN_HERE"
+netbox_validate_certs: false
+
+# --- Precedence Test Variable ---
+test_var: "【8】. [Group Var] 全ホスト共通設定 (group_vars/all.yml)"
