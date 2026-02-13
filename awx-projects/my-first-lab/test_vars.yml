@@ -17,10 +17,10 @@
 # │          └── main.yml
 # ├── test_vars.yml             # メインPlaybook
 #
-# AWXのジョブ実行画面で 「Extra Variables」 欄に以下を入力して実行
-#      test_var: "1. [Extra Var] AWXの実行時に渡す変数（最強）"
+#    AWXのジョブ実行画面で 「Extra Variables」 欄に以下を入力して実行
+#          test_var: "1. [Extra Var] AWXの実行時に渡す変数（最強）"
 #
-# ※上記以外のファイル名で作成されたvarsファイルは[vars_files:][include_vars:]で明示的に読み込む必要があります。 
+# ※上記以外のvarsファイルは[vars_files:][include_vars:]で明示的に読み込む必要があります。 
 #
 # ---------------------------------------------------------
 # 順位,場所,説明(AIによる解説)
@@ -35,7 +35,7 @@
 # 9 (最弱),Role Defaults,   roles/x/defaults/main.yml。上書きされる前提の初期値。
 ---
 - name: Variable Precedence Lab with Block
-  hosts: all
+  hosts: localhost
   become: no
   gather_facts: no
 
@@ -86,3 +86,4 @@
     - name: Final Check outside Block
       ansible.builtin.debug:
         msg: "Block外の最終確認: {{ test_var }}"
+
