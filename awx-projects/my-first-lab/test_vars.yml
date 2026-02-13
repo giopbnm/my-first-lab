@@ -87,4 +87,3 @@
       ansible.builtin.debug:
 
         msg: "Block外の最終確認: {{ test_var }}"
-
