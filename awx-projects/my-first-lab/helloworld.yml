@@ -1,6 +1,7 @@
 ---
 - name: Hello World Playbook
   hosts: all
+  become: no
   gather_facts: no
   tasks:
     - name: Print message

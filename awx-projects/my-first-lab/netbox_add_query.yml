@@ -1,7 +1,8 @@
 ---
 - name: NetBox API Test
-  hosts: localhost
-  connection: local # ローカルホストで実行
+  hosts: all
+  become: no
+  gather_facts: no
   roles:
     - netbox_add
     - netbox_query
