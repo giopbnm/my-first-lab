@@ -37,7 +37,7 @@
 - name: Variable Precedence Lab with Block
   hosts: localhost
   connection: local # ローカルホストで実行
-  gather_facts: false
+  gather_facts: no
 
   # ---------------------------------------------------------
   # Playbook Vars
@@ -87,3 +87,4 @@
       ansible.builtin.debug:
 
         msg: "Block外の最終確認: {{ test_var }}"
+
