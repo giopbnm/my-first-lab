@@ -10,12 +10,12 @@
 # └── roles/
 # │  └── test_vars/
 # │      ├── defaults/
-# │      │   └── main.yml     # 9 role defaults (最弱)
+# │      │   └── main.yml      # 9 role defaults (最弱)
 # │      ├── vars/
-# │      │   └── main.yml     # 5 role vars (強)
+# │      │   └── main.yml      # 5 role vars (強)
 # │      └── tasks/
 # │          └── main.yml
-# ├── test_vars.yml             # メインPlaybook
+# ├── test_vars.yml            # メインPlaybook
 #
 #    AWXのジョブ実行画面で 「Extra Variables」 欄に以下を入力して実行
 #          test_var: "1. [Extra Var] AWXの実行時に渡す変数（最強）"
@@ -164,4 +164,5 @@
     - name: "Final Check: Confirming variable after exiting Block"
       ansible.builtin.debug:
         msg: "Block外の最終確認: {{ test_var }}"
+
 
