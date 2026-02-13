@@ -33,8 +33,38 @@
 # 7       ,Host Vars,       host_vars/ フォルダ内の個別設定。
 # 8       ,Group Vars,      group_vars/ フォルダ内の共通設定。
 # 9 (最弱),Role Defaults,   roles/x/defaults/main.yml。上書きされる前提の初期値。
+
 ---
-- name: Variable Precedence Lab with Block
+###########################################################
+#  PREPARATION AREA: 下準備・デバッグ用プレイ
+#  このセクションは検証前の初期状態確認や準備に使用します
+###########################################################
+- name: "[PREP] Initial State Check"
+  hosts: localhost
+  become: no
+  gather_facts: no
+
+  # ---------------------------------------------------------
+  # Role 呼び出しと引数渡し
+  # ---------------------------------------------------------
+  roles:
+    - role: test_vars
+      vars:
+        test_var: "【4】. [Role Parameter] ロール呼び出し時の引数"
+
+  tasks:
+    # ---------------------------------------------------------
+    # ロール実行後の変数状態を確認
+    # ---------------------------------------------------------
+    - name: "Check variable status after role execution"
+      ansible.builtin.debug:
+        msg: "現在の変数値: {{ test_var }}"
+
+
+###########################################################
+#  MAIN LAB AREA: 変数優先順位の検証メインプレイ
+###########################################################
+- name: "Variable Precedence Lab: Block and Scope Testing"
   hosts: localhost
   become: no
   gather_facts: no
@@ -51,19 +81,26 @@
   vars_files:
     - external_config.yml
 
-  # ---------------------------------------------------------
-  # Role 呼び出しと引数渡し
-  # ---------------------------------------------------------
-  roles:
-    - role: test_vars
-      vars:
-        test_var: "【4】. [Role Parameter] ロール呼び出し時の引数"
+  # # ---------------------------------------------------------
+  # # Role 呼び出しと引数渡し
+  # # ---------------------------------------------------------
+  # roles:
+  #   - role: test_vars
+  #     vars:
+  #       test_var: "【4】. [Role Parameter] ロール呼び出し時の引数"
 
   tasks:
     # ---------------------------------------------------------
+    # タスクレベルでの優先順位検証
+    # ---------------------------------------------------------
+    - name: "Task Level Test: Checking current precedence"
+      ansible.builtin.debug:
+        msg: "{{ test_var }}"
+
+    # ---------------------------------------------------------
     # Block内での優先順位検証
     # ---------------------------------------------------------
-    - name: Block Level Test
+    - name: "Block Scope Test Section"
       block:
         # (A) タスク変数が定義されている場合
         - name: "[Block Level Test] Task level variable check"
@@ -83,7 +120,6 @@
     # ---------------------------------------------------------
     # スコープ解除後の検証
     # ---------------------------------------------------------
-    - name: Final Check outside Block
+    - name: "Final Check: Confirming variable after exiting Block"
       ansible.builtin.debug:
         msg: "Block外の最終確認: {{ test_var }}"
-
