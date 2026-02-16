@@ -145,7 +145,7 @@ EOF
 
   echo "[+] Installing K3s"
   curl -sfL https://get.k3s.io | sh -
-  sudo chmod 644 /etc/rancher/k3s/k3s.yaml
+  sudo k3s server --write-kubeconfig-mode=644
 
   echo "[+] Base setup complete"
 }
