@@ -151,6 +151,7 @@ EOF
   FILE="$HOME/.bashrc"
   if ! grep -qxF "$ALIAS" "$FILE"; then
     echo "$ALIAS" >> "$FILE"
+    source "$FILE"
   fi
 
   echo "[+] Base setup complete"
