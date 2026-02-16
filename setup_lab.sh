@@ -147,6 +147,12 @@ EOF
   curl -sfL https://get.k3s.io | sh -
   sudo k3s server --write-kubeconfig-mode=644
 
+  ALIAS='alias k="kubectl"'
+  FILE="$HOME/.bashrc"
+  if ! grep -qxF "$ALIAS" "$FILE"; then
+    echo "$ALIAS" >> "$FILE"
+  fi
+
   echo "[+] Base setup complete"
 }
 
