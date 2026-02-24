@@ -170,7 +170,8 @@ setup_awx() {
 
   export NAMESPACE=awx
   sudo make deploy
-
+  sleep 10
+  
   echo "[+] Creating AWX instance"
   tee awx-instance.yaml >/dev/null <<'EOF'
 apiVersion: awx.ansible.com/v1beta1
